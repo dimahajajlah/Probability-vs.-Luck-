@@ -8,9 +8,12 @@ The questions are in Spanish. The rest of the game is in English. Choose an answ
 
 Assuming each question has exactly one correct answer and you guess independently, the probability of getting a single question wrong is `3/4`. Therefore, the probability of getting all 100 wrong is:
 
-<p align="center">
-  <img src="https://latex.codecogs.com/svg.image?\dpi{150}\bg{white}P(\text{All\ 100\ answers\ are\ wrong})=\left(\frac{3}{4}\right)^{100}\approx3.2\times10^{-13}" alt="P(All 100 answers are wrong) = (3/4)^100 ≈ 3.2 × 10^-13" />
-</p>
+$$
+P(\text{All 100 answers are wrong})
+=
+\left(\frac{3}{4}\right)^{100}
+\approx 3.2 \times 10^{-13}
+$$
 
 **P(getting at least 1 correct) = 99.999999999968%**
 
