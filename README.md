@@ -22,6 +22,26 @@ Assuming each question has exactly one correct answer and you guess independentl
 
 The chance of getting all 100 questions wrong by random guessing is approximately **1 in 3.12 trillion**.
 
+### The Probability
+
+The probability of getting all 100 questions wrong:
+
+$$
+P(\text{100 wrong}) = \left(\frac{3}{4}\right)^{100}
+$$
+
+The probability of getting at least one correct answer:
+
+$$
+P(\text{at least 1 correct}) = 1 - \left(\frac{3}{4}\right)^{100}
+$$
+
+**99.999999999968%**
+
+The chance of getting all 100 wrong is approximately **1 in 3.12 trillion**.
+
+
+
 **P(getting at least 1 correct) = 99.999999999968%**
 
 The chance of getting all 100 wrong by random guessing is approximately **1 in 3.12 trillion**. The expected score from random guessing is 25 out of 100.
@@ -30,17 +50,6 @@ The chance of getting all 100 wrong by random guessing is approximately **1 in 3
 
 Open `index.html` in your browser. No dependencies, installation, or build step required.
 
-## Host it on GitHub Pages
 
-1. Create a GitHub repository and upload `index.html` and this README to its root.
-2. Open **Settings → Pages**.
-3. Under **Build and deployment**, choose **Deploy from a branch**, select `main` and `/ (root)`, then save.
-4. Your game should be available at `https://<your-username>.github.io/<repo-name>/` once deployment finishes.
-
-## Edit the questions
-
-Questions are in the `Q` array in `index.html`, in the format:
-
-`["Question", "Correct answer", "Wrong 1", "Wrong 2", "Wrong 3"]`
 
 The questions and answer options are shuffled on each attempt.
