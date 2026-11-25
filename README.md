@@ -1,6 +1,8 @@
 # Probability vs. Luck
 The Probability Challenge. 100 Questions, 1 Chance. Probability vs. Luck.
 
+<img width="1600" height="900" alt="Screenshot from 2026-11-25 19-05-31" src="https://github.com/user-attachments/assets/e46a4458-da10-4df2-bf7c-26ea406e0368" />
+
 
 # Statistically Inevitable
 
@@ -51,3 +53,13 @@ Open `index.html` in your browser. No dependencies, installation, or build step 
 
 
 The questions and answer options are shuffled on each attempt.
+
+<img width="1600" height="900" alt="Screenshot from 2026-11-25 19-05-03" src="https://github.com/user-attachments/assets/8001e484-2180-48fc-8f34-dde208a96fd5" />
+<img width="1600" height="900" alt="Screenshot from 2026-11-25 19-05-04" src="https://github.com/user-attachments/assets/a311f348-6556-4353-85e1-789be091c4d6" />
+<img width="1600" height="900" alt="Screenshot from 2026-11-25 19-05-05" src="https://github.com/user-attachments/assets/577d0dbf-b85c-481d-90fa-b0f1543bd3f3" />
+<img width="1600" height="900" alt="Screenshot from 2026-11-25 19-05-06" src="https://github.com/user-attachments/assets/f67c6c38-bdcb-47d8-a968-b88ea942637d" />
+<img width="1600" height="900" alt="Screenshot from 2026-11-25 19-05-07" src="https://github.com/user-attachments/assets/443d267d-0a44-4120-8df8-8192b52d3ff9" />
+
+
+
+
