@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>El examen imposible: 100 preguntas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#eef0ff;--ink:#1b1b4b;--blue:#2f3cff;--sun:#ffd84d;--ok:#12805c;--no:#c62a47;--card:#fff}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font-family:"Bricolage Grotesque",system-ui,sans-serif;line-height:1.45;min-height:100vh;display:flex;justify-content:center;padding:20px 16px 48px}
+main{width:100%;max-width:640px}
+h1{font-size:clamp(2rem,8vw,3.2rem);line-height:1.02;font-weight:800;letter-spacing:-.02em;margin:24px 0 14px}
+h2{font-size:clamp(1.25rem,4.5vw,1.7rem);line-height:1.25;margin:18px 0 20px}
+p{margin:0 0 14px}
+.odds{background:var(--sun);border-radius:14px;padding:14px 16px;font-weight:600}
+.odds b{font-size:1.5rem;display:block}
+button{font:inherit;cursor:pointer}
+.go{background:var(--blue);color:#fff;border:0;border-radius:12px;padding:14px 22px;font-weight:800;font-size:1.05rem;margin-top:8px}
+.go:focus-visible,.opt:focus-visible{outline:3px solid var(--ink);outline-offset:2px}
+.bar{height:8px;background:#fff;border-radius:99px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--blue);width:0;transition:width .25s}
+.meta{display:flex;justify-content:space-between;font-weight:600;margin:10px 0 0;font-size:.95rem}
+.opts{display:grid;gap:10px}
+.opt{text-align:left;background:var(--card);border:2px solid var(--ink);border-radius:12px;padding:13px 15px;color:var(--ink)}
+.opt:hover:not(:disabled){background:var(--sun)}
+.opt:disabled{cursor:default}
+.opt.right{background:var(--ok);border-color:var(--ok);color:#fff}
+.opt.wrong{background:var(--no);border-color:var(--no);color:#fff}
+.score{font-size:clamp(3.5rem,18vw,6rem);font-weight:800;line-height:1;margin:18px 0 6px}
+[hidden]{display:none!important}
+@media (prefers-reduced-motion:reduce){.bar i{transition:none}}
+</style>
+</head>
+<body>
+<main>
+<section id="start">
+  <h1>El examen imposible</h1>
+  <p>100 preguntas de cultura general, 4 opciones cada una. Elige al azar y la probabilidad de fallarlas todas es de (3/4)<sup>100</sup>.</p>
+  <p class="odds"><b>1 entre 3,1 billones</b>Eso es lo que cuesta fallar las 100 adivinando.</p>
+  <p>¿Aciertas algunas o consigues el milagro?</p>
+  <button class="go" id="begin">Empezar</button>
+</section>
+
+<section id="quiz" hidden>
+  <div class="bar" role="progressbar" aria-label="Progreso"><i id="fill"></i></div>
+  <div class="meta"><span id="num"></span><span id="tally"></span></div>
+  <h2 id="q" aria-live="polite"></h2>
+  <div class="opts" id="opts"></div>
+  <button class="go" id="next" hidden>Siguiente</button>
+</section>
+
+<section id="end" hidden>
+  <h1>Resultado</h1>
+  <div class="score" id="final"></div>
+  <p id="verdict"></p>
+  <p class="odds" id="odds"></p>
+  <button class="go" id="again">Intentarlo de nuevo</button>
+</section>
+</main>
+
+<script>
+// [pregunta, respuesta correcta, incorrecta, incorrecta, incorrecta]
+const Q=[
+["¿Cuál es la capital de Australia?","Canberra","Sídney","Melbourne","Perth"],
+["¿Cuántos planetas tiene el sistema solar?","8","7","9","10"],
+["¿Quién pintó la Mona Lisa?","Leonardo da Vinci","Miguel Ángel","Rafael","Botticelli"],
+["¿Cuál es el océano más grande?","Pacífico","Atlántico","Índico","Ártico"],
+["¿Qué gas absorben las plantas en la fotosíntesis?","Dióxido de carbono","Oxígeno","Nitrógeno","Hidrógeno"],
+["¿En qué año llegó el ser humano a la Luna?","1969","1965","1972","1959"],
+["¿Cuál es el río más largo de Sudamérica?","Amazonas","Orinoco","Paraná","Magdalena"],
+["¿Cuántos lados tiene un hexágono?","6","5","7","8"],
+["¿Quién escribió «Don Quijote de la Mancha»?","Miguel de Cervantes","Lope de Vega","Francisco de Quevedo","Luis de Góngora"],
+["¿Qué elemento químico tiene el símbolo Au?","Oro","Plata","Aluminio","Argón"],
+["¿Cuál es el animal terrestre más grande?","Elefante africano","Jirafa","Rinoceronte","Hipopótamo"],
+["¿Qué país es el más grande del mundo por superficie?","Rusia","Canadá","China","Estados Unidos"],
+["¿Cuántos huesos tiene un adulto?","206","186","226","256"],
+["¿Qué planeta se conoce como el planeta rojo?","Marte","Venus","Júpiter","Mercurio"],
+["¿Quién formuló la teoría de la relatividad?","Albert Einstein","Isaac Newton","Niels Bohr","Galileo Galilei"],
+["¿Cuál es la capital de Japón?","Tokio","Kioto","Osaka","Nagoya"],
+["¿Cuántos jugadores de un equipo hay en el campo en fútbol?","11","10","9","12"],
+["¿Qué selección ganó el Mundial de fútbol de 2010?","España","Alemania","Países Bajos","Brasil"],
+["¿Qué metal es líquido a temperatura ambiente?","Mercurio","Plomo","Estaño","Cobre"],
+["¿En qué continente está Egipto?","África","Asia","Europa","Oceanía"],
+["¿Qué idioma tiene más hablantes nativos?","Chino mandarín","Inglés","Español","Hindi"],
+["¿Quién fue el primer presidente de Estados Unidos?","George Washington","Abraham Lincoln","Thomas Jefferson","John Adams"],
+["¿Cuál es la fórmula química del agua?","H₂O","CO₂","O₂","NaCl"],
+["¿Cuántos minutos hay en hora y media?","90","80","100","120"],
+["¿Qué órgano bombea la sangre?","Corazón","Hígado","Pulmón","Riñón"],
+["¿Cuál es la montaña más alta del mundo?","Everest","K2","Kilimanjaro","Mont Blanc"],
+["¿Quién compuso la Novena Sinfonía?","Beethoven","Mozart","Bach","Chopin"],
+["¿Cuál es la capital de Canadá?","Ottawa","Toronto","Montreal","Vancouver"],
+["¿Qué vitamina produce la piel con el sol?","Vitamina D","Vitamina C","Vitamina A","Vitamina B12"],
+["¿Cuántos colores tiene el arcoíris?","7","6","8","5"],
+["¿Qué ave simboliza la paz?","Paloma","Águila","Cisne","Gaviota"],
+["¿Cuál es el desierto cálido más grande del mundo?","Sahara","Gobi","Kalahari","Arabia"],
+["¿Cuál es la raíz cuadrada de 144?","12","14","11","16"],
+["¿En qué año comenzó la Primera Guerra Mundial?","1914","1918","1939","1905"],
+["¿Quién descubrió la penicilina?","Alexander Fleming","Louis Pasteur","Marie Curie","Robert Koch"],
+["¿Qué país tiene más población?","India","China","Estados Unidos","Indonesia"],
+["¿Qué lenguaje de programación creó Guido van Rossum?","Python","Java","C++","Ruby"],
+["¿Qué significan las siglas HTML?","HyperText Markup Language","High Transfer Markup Language","HyperText Machine Language","Home Tool Markup Language"],
+["¿Cuál es el planeta más grande del sistema solar?","Júpiter","Saturno","Neptuno","Urano"],
+["¿Cuántas cuerdas tiene una guitarra estándar?","6","4","5","8"],
+["¿Qué país tiene forma de bota?","Italia","Grecia","Portugal","Chile"],
+["¿Quién escribió «Cien años de soledad»?","Gabriel García Márquez","Mario Vargas Llosa","Julio Cortázar","Pablo Neruda"],
+["¿A cuántos grados Celsius hierve el agua al nivel del mar?","100 °C","90 °C","110 °C","80 °C"],
+["¿Cuál es la capital de Brasil?","Brasilia","Río de Janeiro","São Paulo","Salvador"],
+["¿Qué instrumento tiene teclas blancas y negras?","Piano","Violín","Flauta","Trompeta"],
+["¿Cuál es el mamífero marino más grande?","Ballena azul","Orca","Cachalote","Delfín mular"],
+["¿Qué fiesta se celebra el 31 de octubre?","Halloween","Navidad","Año Nuevo","San Valentín"],
+["¿Cuántos jugadores de un equipo hay en la cancha en baloncesto?","5","6","7","4"],
+["¿Cuál es la capital de Egipto?","El Cairo","Alejandría","Luxor","Guiza"],
+["¿Qué ciudad es famosa por la Torre Eiffel?","París","Londres","Roma","Berlín"],
+["¿Cuál es el hueso más largo del cuerpo humano?","Fémur","Tibia","Húmero","Peroné"],
+["¿Cuál es el símbolo químico del sodio?","Na","So","S","Sd"],
+["¿Qué mar es famoso por su salinidad, donde se flota sin esfuerzo?","Mar Muerto","Mar Rojo","Mar Negro","Mar Caspio"],
+["¿Quién fue el primer ser humano en viajar al espacio?","Yuri Gagarin","Neil Armstrong","Buzz Aldrin","Alan Shepard"],
+["¿Qué color resulta de mezclar azul y amarillo?","Verde","Naranja","Morado","Marrón"],
+["¿Cuál es la capital de Marruecos?","Rabat","Casablanca","Marrakech","Fez"],
+["¿Qué animal produce la seda?","Gusano de seda","Abeja","Hormiga","Escarabajo"],
+["¿Cuántos días tiene un año bisiesto?","366","365","364","367"],
+["¿Quién pintó «La noche estrellada»?","Vincent van Gogh","Claude Monet","Pablo Picasso","Salvador Dalí"],
+["¿Qué deporte se juega en Wimbledon?","Tenis","Golf","Críquet","Rugby"],
+["¿Qué órgano filtra la sangre y produce la orina?","Riñón","Hígado","Bazo","Estómago"],
+["¿Cuál es la moneda de Japón?","Yen","Won","Yuan","Rupia"],
+["¿Cuál es la capital de Turquía?","Ankara","Estambul","Esmirna","Antalya"],
+["¿Qué planeta tiene los anillos más visibles?","Saturno","Marte","Venus","Mercurio"],
+["¿Cuánto es 7 × 8?","56","54","63","48"],
+["¿Qué inventó Alexander Graham Bell?","El teléfono","La radio","La bombilla","El telégrafo"],
+["¿Qué lengua se habla principalmente en Brasil?","Portugués","Español","Inglés","Francés"],
+["¿Cuál es el ave más grande que no vuela?","Avestruz","Emú","Pingüino emperador","Cóndor"],
+["¿En qué país están las pirámides de Giza?","Egipto","México","Perú","Sudán"],
+["¿Qué parte de la planta absorbe el agua del suelo?","Raíz","Hoja","Flor","Tallo"],
+["¿Cuántos continentes se cuentan en el modelo más común?","7","5","6","8"],
+["¿Qué significan las siglas CPU?","Unidad central de procesamiento","Unidad de control de programas","Computadora personal universal","Centro de procesamiento único"],
+["¿Quién llegó a América en 1492 en nombre de España?","Cristóbal Colón","Américo Vespucio","Hernán Cortés","Vasco da Gama"],
+["¿Qué cantante es conocida como la «Reina del Pop»?","Madonna","Beyoncé","Shakira","Adele"],
+["¿Cuál es el país más pequeño del mundo?","Ciudad del Vaticano","Mónaco","San Marino","Liechtenstein"],
+["¿Qué número representa L en números romanos?","50","100","500","10"],
+["¿Qué estación sigue al invierno en el hemisferio norte?","Primavera","Verano","Otoño","Sequía"],
+["¿Qué gas liberan las plantas en la fotosíntesis?","Oxígeno","Dióxido de carbono","Nitrógeno","Metano"],
+["¿Cuál es la ciudad más poblada de España?","Madrid","Barcelona","Valencia","Sevilla"],
+["¿Cuál es la capital de Argentina?","Buenos Aires","Córdoba","Rosario","Montevideo"],
+["¿Qué río atraviesa El Cairo?","Nilo","Tigris","Éufrates","Jordán"],
+["¿Qué es un haiku?","Un poema japonés breve","Una danza japonesa","Un plato de sushi","Un arte marcial"],
+["¿Qué deporte practica Rafael Nadal?","Tenis","Golf","Fórmula 1","Baloncesto"],
+["¿Cuál es el símbolo químico del hierro?","Fe","Hi","Ir","Fr"],
+["¿Qué vitamina abunda en los cítricos?","Vitamina C","Vitamina K","Vitamina D","Vitamina B12"],
+["¿Quién formuló la ley de la gravitación universal?","Isaac Newton","Galileo Galilei","Johannes Kepler","Nikola Tesla"],
+["¿Cuánto es el 15 % de 200?","30","25","20","35"],
+["¿Qué país organizó los Juegos Olímpicos de 2016?","Brasil","China","Reino Unido","Japón"],
+["¿Cuál es el planeta más cercano al Sol?","Mercurio","Venus","Tierra","Marte"],
+["¿Qué es el ADN?","La molécula que guarda la información genética","Una proteína muscular","Una hormona del crecimiento","Un glóbulo blanco"],
+["¿Cuál es la capital de Italia?","Roma","Milán","Nápoles","Venecia"],
+["¿Qué instrumento mide la temperatura?","Termómetro","Barómetro","Higrómetro","Anemómetro"],
+["¿Qué queso lleva tradicionalmente la ensalada griega?","Feta","Parmesano","Cheddar","Brie"],
+["¿Qué lengua tiene más hablantes en total, nativos y no nativos?","Inglés","Chino mandarín","Español","Hindi"],
+["¿Cuál es el animal terrestre más rápido?","Guepardo","León","Antílope","Caballo"],
+["¿Cuántos estados tiene Estados Unidos?","50","48","52","51"],
+["¿Quién escribió «Romeo y Julieta»?","William Shakespeare","Charles Dickens","Oscar Wilde","Molière"],
+["¿Qué elemento es el más abundante del universo?","Hidrógeno","Helio","Oxígeno","Carbono"],
+["¿Qué capital está a orillas del Sena?","París","Lisboa","Viena","Praga"],
+["¿Cuánto es 2 elevado a la 10?","1024","1000","512","2048"]
+];
+
+const $=id=>document.getElementById(id);
+const show=id=>["start","quiz","end"].forEach(s=>$(s).hidden=s!==id);
+const shuffle=a=>{for(let k=a.length-1;k>0;k--){const j=Math.floor(Math.random()*(k+1));[a[k],a[j]]=[a[j],a[k]]}return a};
+let deck,i,hits,locked;
+
+function start(){deck=shuffle(Q.slice());i=0;hits=0;show("quiz");render()}
+
+function render(){
+  const [q,right,...bad]=deck[i];
+  locked=false;
+  $("num").textContent="Pregunta "+(i+1)+" de "+deck.length;
+  $("tally").textContent="Aciertos: "+hits+" | Fallos: "+(i-hits);
+  $("fill").style.width=(i/deck.length*100)+"%";
+  $("q").textContent=q;
+  $("next").hidden=true;
+  const box=$("opts");box.textContent="";
+  shuffle([right,...bad]).forEach(t=>{
+    const b=document.createElement("button");
+    b.className="opt";b.textContent=t;b.dataset.ok=t===right?"1":"";
+    b.onclick=()=>pick(b);box.appendChild(b);
+  });
+}
+
+function pick(b){
+  if(locked)return;locked=true;
+  const ok=b.dataset.ok==="1";
+  if(ok)hits++;
+  document.querySelectorAll(".opt").forEach(o=>{
+    o.disabled=true;
+    if(o.dataset.ok==="1")o.classList.add("right");
+  });
+  if(!ok)b.classList.add("wrong");
+  $("tally").textContent="Aciertos: "+hits+" | Fallos: "+(i+1-hits);
+  const n=$("next");n.hidden=false;
+  n.textContent=i===deck.length-1?"Ver resultado":"Siguiente";
+  n.focus();
+}
+
+function finish(){
+  const total=deck.length,fails=total-hits;
+  $("fill").style.width="100%";
+  $("final").textContent=hits+" / "+total;
+  let v;
+  if(hits===0)v="Cero aciertos. Has logrado lo que parecía imposible. Compra un billete de lotería.";
+  else if(hits===total)v="Perfecto. Ni una sola falla. Eso también es poco probable adivinando.";
+  else if(hits<=15)v="Solo "+hits+" aciertos, por debajo de lo que daría el puro azar (unos 25 de 100). Vas camino de lo imposible.";
+  else if(hits<=35)v="Tienes "+hits+" aciertos y "+fails+" fallos: justo lo que se espera de quien adivina (unos 25).";
+  else v="Tienes "+hits+" aciertos. Por encima de lo que da el puro azar (unos 25 de 100).";
+  $("verdict").textContent=v;
+  $("odds").textContent="Recuerda: fallar las 100 por azar tiene una probabilidad de (3/4)^100, es decir, 1 entre 3,1 billones.";
+  show("end");
+}
+
+$("begin").onclick=start;
+$("again").onclick=start;
+$("next").onclick=()=>{i++;i<deck.length?render():finish()};
+</script>
+</body>
+</html>
