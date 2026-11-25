@@ -1,4 +1,6 @@
 # Probability vs. Luck
+The Probability Challenge. 100 Questions, 1 Chance. Probability vs. Luck.
+
 
 # Statistically Inevitable
 The Probability Challenge. 100 Questions, 1 Chance. Probability vs. Luck.
