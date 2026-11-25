@@ -1,7 +1,7 @@
 # Probability vs. Luck
 The Probability Challenge. 100 Questions, 1 Chance. Probability vs. Luck.
 
-<img width="1600" height="900" alt="Screenshot from 2026-11-25 19-05-31" src="https://github.com/user-attachments/assets/e46a4458-da10-4df2-bf7c-26ea406e0368" />
+<img width="1596" height="691" alt="Screenshot from 2026-11-25 19-09-06" src="https://github.com/user-attachments/assets/4e20a135-ba38-4d24-a116-588f5f5a1582" />
 
 
 # Statistically Inevitable
