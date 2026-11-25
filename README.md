@@ -3,7 +3,6 @@ The Probability Challenge. 100 Questions, 1 Chance. Probability vs. Luck.
 
 
 # Statistically Inevitable
-The Probability Challenge. 100 Questions, 1 Chance. Probability vs. Luck.
 
 A silly little quiz built to settle an argument: **if you randomly guess on 100 multiple-choice questions with 4 options each, how likely are you to get at least one right?**
 
