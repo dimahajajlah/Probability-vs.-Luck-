@@ -1,5 +1,6 @@
 # Probability vs. Luck
 The Probability Challenge. 100 Questions, 1 Chance. Probability vs. Luck.
+https://dimahajajlah.github.io/Probability-vs.-Luck-/
 
 <img width="1596" height="691" alt="Screenshot from 2026-11-25 19-09-06" src="https://github.com/user-attachments/assets/4e20a135-ba38-4d24-a116-588f5f5a1582" />
 
